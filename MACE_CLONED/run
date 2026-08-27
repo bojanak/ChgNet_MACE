@@ -1,0 +1,37 @@
+#!/bin/bash
+#SBATCH -N 1
+#SBATCH -t 12:00:00
+#SBATCH -J INC84_1
+#SBATCH --exclusive
+#SBATCH --ntasks-per-node 16
+##SBATCH --reservation=devel
+#SBATCH -A naiss2025-1-25
+
+
+mace_run_train \
+    --name="MACE" \
+    --foundation_model="../CLONE_Ce_to_La/mace_mp0_Ce_to_La_node_only.model" \
+    --multiheads_finetuning=False \
+    --train_file="train.xyz" \
+    --E0s='{57:0.58112179E+00,58:0.58112179E+00,8:-.15355693E+01}' \
+    --valid_fraction=0.5 \
+    --energy_weight=1.0 \
+    --forces_weight=10.0 \
+    --stress_weight=1.0 \
+    --swa_forces_weight=100.0 \
+    --forces_key=forces \
+    --energy_key=energy \
+    --stress_key=stress \
+    --lr=0.01 \
+    --scaling="rms_forces_scaling" \
+    --batch_size=5 \
+    --max_num_epochs=100 \
+    --ema \
+    --ema_decay=0.99 \
+    --amsgrad \
+    --default_dtype="float64" \
+    --clip_grad=10 \
+    --device=cpu \
+    --seed=7 \
+    --restart_latest
+
